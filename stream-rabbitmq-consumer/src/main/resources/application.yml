@@ -1,0 +1,35 @@
+server:
+  port: 8051
+
+spring:
+  application:
+    name: stream-rabbitmq-consumer
+  cloud:
+    stream:
+      binders:  # 在此处配置要绑定的rabbitmq的服务信息
+        defaultRabbit:  # 表示定义的名称，用于binding整合
+          type: rabbit  # 消息组件类型
+          environment:
+            spring:
+              rabbitmq:
+                host: localhost
+                port: 5672
+                username: guest
+                password: guest
+                virtual-host: /
+      bindings: # 服务的整合处理
+        subscribeMyTopic-in-0: # 通道的名称
+          destination: MyTopic # 表示要使用的Exchange名称定义
+          group: '${spring.application.name}'
+          content-type: application/json # 设置消息类型，本次为json，文本则设置text/plain
+          binder: defaultRabbit   # 设置要绑定的消息服务的具体设置
+    function:
+      definition: subscribeMyTopic
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8888/eureka/
+  instance:
+    lease-renewal-interval-in-seconds: 2 # 设置心跳的时间间隔，默认30秒
+    lease-expiration-duration-in-seconds: 5 # 如果现在超过5秒的间隔，默认90秒

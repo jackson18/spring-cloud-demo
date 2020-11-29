@@ -1,0 +1,30 @@
+
+server:
+  port: 8050
+
+spring:
+  application:
+    name: stream-rabbitmq-product
+  cloud:
+    stream:
+      binders:  # 在此处配置要绑定的rabbitmq的服务信息
+        defaultRabbit:  # 表示定义的名称，用于binding整合
+          type: rabbit  # 消息组件类型
+          environment:
+            spring:
+              rabbitmq:
+                host: localhost
+                port: 5672
+                username: guest
+                password: guest
+                virtual-host: /
+  function:
+    definition: MyTopic
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8888/eureka/
+  instance:
+    lease-renewal-interval-in-seconds: 2 # 设置心跳的时间间隔，默认30秒
+    lease-expiration-duration-in-seconds: 5 # 如果现在超过5秒的间隔，默认90秒
